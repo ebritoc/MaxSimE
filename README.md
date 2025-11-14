@@ -1,180 +1,60 @@
-## 🚨 **Announcements** 
+# MaxSimE — SIGIR 2023  
 
-* (1/29/23) We have merged a new index updater feature and support for additional Hugging Face models! These are in beta so please give us feedback as you try them out.
-* (1/24/23) If you're looking for the **DSP** framework for composing ColBERTv2 and LLMs, it's at: https://github.com/stanfordnlp/dsp
 
-# ColBERT (v2)
+This repository contains the experimental code used in the SIGIR 2023 paper:
 
-### ColBERT is a _fast_ and _accurate_ retrieval model, enabling scalable BERT-based search over large text collections in tens of milliseconds.
+### MaxSimE: Explaining Transformer-based Semantic Similarity via Contextualized Best Matching Token Pairs
 
+The purpose of this repository is primarily reproducibility rather than reusability.  
+The code reflects the exact experimental setup used for the SIGIR 2023 publication and enables faithful replication of the results. It is not designed as a general-purpose or production-ready library.
 
-<p align="center">
-  <img align="center" src="docs/images/ColBERT-Framework-MaxSim-W370px.png" />
-</p>
-<p align="center">
-  <b>Figure 1:</b> ColBERT's late interaction, efficiently scoring the fine-grained similarity between a queries and a passage.
-</p>
+---
 
-As Figure 1 illustrates, ColBERT relies on fine-grained **contextual late interaction**: it encodes each passage into a **matrix** of token-level embeddings (shown above in blue). Then at search time, it embeds every query into another matrix (shown in green) and efficiently finds passages that contextually match the query using scalable vector-similarity (`MaxSim`) operators.
+## Purpose of the Codebase
 
-These rich interactions allow ColBERT to surpass the quality of _single-vector_ representation models, while scaling efficiently to large corpora. You can read more in our papers:
+This repository was created to support research reproducibility. Accordingly:
 
-* [**ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT**](https://arxiv.org/abs/2004.12832) (SIGIR'20).
-* [**Relevance-guided Supervision for OpenQA with ColBERT**](https://arxiv.org/abs/2007.00814) (TACL'21).
-* [**Baleen: Robust Multi-Hop Reasoning at Scale via Condensed Retrieval**](https://arxiv.org/abs/2101.00436) (NeurIPS'21).
-* [**ColBERTv2: Effective and Efficient Retrieval via Lightweight Late Interaction**](https://arxiv.org/abs/2112.01488) (NAACL'22).
-* [**PLAID: An Efficient Engine for Late Interaction Retrieval**](https://arxiv.org/abs/2205.09707) (CIKM'22).
+- The code mirrors the exact experimental pipeline used in the SIGIR 2023 paper.  
+- It prioritizes fidelity to the publication over modularity or extensibility.  
+- It is intended to help readers, reviewers, and researchers replicate the results presented in the paper.
 
-----
+If you plan to adapt or extend this work, please be aware that the code may require restructuring.
 
-## ColBERTv1
+---
 
-The ColBERTv1 code from the SIGIR'20 paper is in the [`colbertv1` branch](https://github.com/stanford-futuredata/ColBERT/tree/colbertv1). See [here](#branches) for more information on other branches.
+## Reproducible Snapshot (SIGIR 2023)
 
+To reproduce the results as published, check out the following tag:
+v1.0-sigir23
 
-## Installation
 
-ColBERT requires Python 3.7+ and Pytorch 1.9+ and uses the [HuggingFace Transformers](https://github.com/huggingface/transformers) library.
+This tag captures the exact state of the code used in the SIGIR 2023 experiments.
 
-We strongly recommend creating a conda environment using the commands below. (If you don't have conda, follow the official [conda installation guide](https://docs.anaconda.com/anaconda/install/linux/#installation).)
+---
 
-We have also included a new environment file specifically for CPU-only environments (`conda_env_cpu.yml`), but note that if you are testing CPU execution on a machine that includes GPUs you might need to specify `CUDA_VISIBLE_DEVICES=""` as part of your command. Note that a GPU is required for training and indexing.
+# Contact
 
-```
-conda env create -f conda_env[_cpu].yml
-conda activate colbert
-```
+For questions about the code, reproducibility, or the SIGIR 2023 experiments, please open an issue or contact the authors.
 
-If you face any problems, please [open a new issue](https://github.com/stanford-futuredata/ColBERT/issues) and we'll help you promptly!
+# Citation
 
+If you use this code, build upon this work, or reproduce the experimental results, please cite the original SIGIR 2023 paper:
 
-
-## Overview
-
-Using ColBERT on a dataset typically involves the following steps.
-
-**Step 0: Preprocess your collection.** At its simplest, ColBERT works with tab-separated (TSV) files: a file (e.g., `collection.tsv`) will contain all passages and another (e.g., `queries.tsv`) will contain a set of queries for searching the collection.
-
-**Step 1: Download the [pre-trained ColBERTv2 checkpoint](https://downloads.cs.stanford.edu/nlp/data/colbert/colbertv2/colbertv2.0.tar.gz).** This checkpoint has been trained on the MS MARCO Passage Ranking task. You can also _optionally_ [train your own ColBERT model](#training).
-
-**Step 2: Index your collection.** Once you have a trained ColBERT model, you need to [index your collection](#indexing) to permit fast retrieval. This step encodes all passages into matrices, stores them on disk, and builds data structures for efficient search.
-
-**Step 3: Search the collection with your queries.** Given the model and index, you can [issue queries over the collection](#retrieval) to retrieve the top-k passages for each query.
-
-Below, we illustrate these steps via an example run on the MS MARCO Passage Ranking task.
-
-
-## API Usage Notebook
-
-This Jupyter notebook **[docs/intro.ipynb notebook](docs/intro.ipynb)** illustrates using the key features of ColBERT with the new Python API.
-
-It includes how to download the ColBERTv2 model checkpoint trained on MS MARCO Passage Ranking and how to download our new LoTTE benchmark.
-
-
-## Data
-
-This repository works directly with a simple **tab-separated file** format to store queries, passages, and top-k ranked lists.
-
-
-* Queries: each line is `qid \t query text`.
-* Collection: each line is `pid \t passage text`.
-* Top-k Ranking: each line is `qid \t pid \t rank`.
-
-This works directly with the data format of the [MS MARCO Passage Ranking](https://github.com/microsoft/MSMARCO-Passage-Ranking) dataset. You will need the training triples (`triples.train.small.tar.gz`), the official top-1000 ranked lists for the dev set queries (`top1000.dev`), and the dev set relevant passages (`qrels.dev.small.tsv`). For indexing the full collection, you will also need the list of passages (`collection.tar.gz`).
-
-
-## Indexing
-
-For fast retrieval, indexing precomputes the ColBERT representations of passages.
-
-Example usage:
-
-```
-from colbert.infra import Run, RunConfig, ColBERTConfig
-from colbert import Indexer
-
-if __name__=='__main__':
-    with Run().context(RunConfig(nranks=1, experiment="msmarco")):
-
-        config = ColBERTConfig(
-            nbits=2,
-            root="/path/to/experiments",
-        )
-        indexer = Indexer(checkpoint="/path/to/checkpoint", config=config)
-        indexer.index(name="msmarco.nbits=2", collection="/path/to/MSMARCO/collection.tsv")
-```
-
-
-## Retrieval
-
-We typically recommend that you use ColBERT for **end-to-end** retrieval, where it directly finds its top-k passages from the full collection:
-
-```
-from colbert.data import Queries
-from colbert.infra import Run, RunConfig, ColBERTConfig
-from colbert import Searcher
-
-if __name__=='__main__':
-    with Run().context(RunConfig(nranks=1, experiment="msmarco")):
-
-        config = ColBERTConfig(
-            root="/path/to/experiments",
-        )
-        searcher = Searcher(index="msmarco.nbits=2", config=config)
-        queries = Queries("/path/to/MSMARCO/queries.dev.small.tsv")
-        ranking = searcher.search_all(queries, k=100)
-        ranking.save("msmarco.nbits=2.ranking.tsv")
-```
-
-You can optionally specify the `ncells`, `centroid_score_threshold`, and `ndocs` search hyperparameters to trade off between speed and result quality. Defaults for different values of `k` are listed in colbert/searcher.py.
-
-We can evaluate the MSMARCO rankings using the following command:
-
-```
-python -m utility.evaluate.msmarco_passages --ranking "/path/to/msmarco.nbits=2.ranking.tsv" --qrels "/path/to/MSMARCO/qrels.dev.small.tsv"
-```
-
-## Training
-
-We provide a [pre-trained model checkpoint](https://downloads.cs.stanford.edu/nlp/data/colbert/colbertv2/colbertv2.0.tar.gz), but we also detail how to train from scratch here.
-Note that this example demonstrates the ColBERTv1 style of training, but the provided checkpoint was trained with ColBERTv2.
-
-Training requires a JSONL triples file with a `[qid, pid+, pid-]` list per line. The query IDs and passage IDs correspond to the specified `queries.tsv` and `collection.tsv` files respectively.
-
-Example usage (training on 4 GPUs):
-
-```
-from colbert.infra import Run, RunConfig, ColBERTConfig
-from colbert import Trainer
-
-if __name__=='__main__':
-    with Run().context(RunConfig(nranks=4, experiment="msmarco")):
-
-        config = ColBERTConfig(
-            bsize=32,
-            root="/path/to/experiments",
-        )
-        trainer = Trainer(
-            triples="/path/to/MSMARCO/triples.train.small.tsv",
-            queries="/path/to/MSMARCO/queries.train.small.tsv",
-            collection="/path/to/MSMARCO/collection.tsv",
-            config=config,
-        )
-
-        checkpoint_path = trainer.train()
-
-        print(f"Saved checkpoint to {checkpoint_path}...")
-```
-
-## Branches
-
-### Supported branches
-
-* [`main`](https://github.com/stanford-futuredata/ColBERT/tree/main): Stable branch with ColBERTv2 + PLAID.
-* [`colbertv1`](https://github.com/stanford-futuredata/ColBERT/tree/colbertv1): Legacy branch for ColBERTv1.
-
-### Deprecated branches
-* [`new_api`](https://github.com/stanford-futuredata/ColBERT/tree/new_api): Base ColBERTv2 implementation.
-* [`cpu_inference`](https://github.com/stanford-futuredata/ColBERT/tree/cpu_inference): ColBERTv2 implementation with CPU search support.
-* [`fast_search`](https://github.com/stanford-futuredata/ColBERT/tree/fast_search): ColBERTv2 implementation with PLAID.
-* [`binarization`](https://github.com/stanford-futuredata/ColBERT/tree/binarization): ColBERT with a baseline binarization-based compression strategy (as opposed to ColBERTv2's residual compression, which we found to be more robust).
+```bibtex
+@inproceedings{10.1145/3539618.3592017,
+  author = {Brito, Eduardo and Iser, Henri},
+  title = {MaxSimE: Explaining Transformer-based Semantic Similarity via Contextualized Best Matching Token Pairs},
+  year = {2023},
+  isbn = {9781450394086},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3539618.3592017},
+  doi = {10.1145/3539618.3592017},
+  abstract = {Current semantic search approaches rely on black-box language models, such as BERT, which limit their interpretability and transparency. In this work, we propose MaxSimE, an explanation method for language models applied to measure semantic similarity. Our approach is inspired by the explainable-by-design ColBERT architecture and generates explanations by matching contextualized query tokens to the most similar tokens from the retrieved document according to the cosine similarity of their embeddings. Unlike existing post-hoc explanation methods, which may lack fidelity to the model and thus fail to provide trustworthy explanations in critical settings, we demonstrate that MaxSimE can generate faithful explanations under certain conditions and how it improves the interpretability of semantic search results on ranked documents from the LoTTe benchmark, showing its potential for trustworthy information retrieval.},
+  booktitle = {Proceedings of the 46th International ACM SIGIR Conference on Research and Development in Information Retrieval},
+  pages = {2154--2158},
+  numpages = {5},
+  keywords = {ad-hoc explanations, explainable search, neural models, semantic similarity, trustworthy information retrieval},
+  location = {Taipei, Taiwan},
+  series = {SIGIR '23}
+}
