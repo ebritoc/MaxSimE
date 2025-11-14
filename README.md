@@ -3,7 +3,7 @@
 
 This repository contains the experimental code used in the SIGIR 2023 paper:
 
-### MaxSimE: Explaining Transformer-based Semantic Similarity via Contextualized Best Matching Token Pairs
+### MaxSimE: Explaining Transformer-based Semantic Similarity via Contextualized Best Matching Token Pairs (Brito and Iser, 2023)
 
 The purpose of this repository is primarily reproducibility rather than reusability.  
 The code reflects the exact experimental setup used for the SIGIR 2023 publication and enables faithful replication of the results. It is not designed as a general-purpose or production-ready library.
@@ -19,16 +19,6 @@ This repository was created to support research reproducibility. Accordingly:
 - It is intended to help readers, reviewers, and researchers replicate the results presented in the paper.
 
 If you plan to adapt or extend this work, please be aware that the code may require restructuring.
-
----
-
-## Reproducible Snapshot (SIGIR 2023)
-
-To reproduce the results as published, check out the following tag:
-v1.0-sigir23
-
-
-This tag captures the exact state of the code used in the SIGIR 2023 experiments.
 
 ---
 
