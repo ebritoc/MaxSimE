@@ -1,3 +1,31 @@
+Metadata-Version: 2.4
+Name: maxsime
+Version: 2.0.0
+Summary: MaxSimE: Explaining Transformer-based Semantic Similarity via Contextualized Best Matching Token Pairs
+Author: Eduardo Brito, Henri Iser
+License: MIT
+Project-URL: Repository, https://github.com/ebritoc/MaxSimE
+Project-URL: Paper, https://doi.org/10.1145/3539618.3592017
+Keywords: explainability,transformers,semantic-similarity,colbert,information-retrieval,maxsim
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.21
+Requires-Dist: matplotlib>=3.5
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0; extra == "dev"
+Dynamic: license-file
+
 # MaxSimE
 
 **Explaining Transformer-based Semantic Similarity via Contextualized Best Matching Token Pairs**

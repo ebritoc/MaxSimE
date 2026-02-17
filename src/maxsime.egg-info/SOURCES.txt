@@ -1,0 +1,15 @@
+LICENSE
+README.md
+pyproject.toml
+src/maxsime/__init__.py
+src/maxsime/core.py
+src/maxsime/data_structures.py
+src/maxsime/utils.py
+src/maxsime/visualization.py
+src/maxsime.egg-info/PKG-INFO
+src/maxsime.egg-info/SOURCES.txt
+src/maxsime.egg-info/dependency_links.txt
+src/maxsime.egg-info/requires.txt
+src/maxsime.egg-info/top_level.txt
+tests/test_core.py
+tests/test_visualization.py
